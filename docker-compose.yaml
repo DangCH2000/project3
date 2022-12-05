@@ -10,6 +10,10 @@ services:
         - backend-feed
   backend-user:
     image: udagram-api-user
+    volumes:
+      - $HOME/.aws:/root/.aws
+    env_file:
+      - .env
     environment:
       POSTGRES_USERNAME: $POSTGRES_USERNAME
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD 
@@ -24,6 +28,8 @@ services:
     image: udagram-api-feed
     volumes:
       - $HOME/.aws:/root/.aws
+    env_file:
+      - .env
     environment:
       POSTGRES_USERNAME: $POSTGRES_USERNAME
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD 
