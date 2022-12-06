@@ -1,0 +1,47 @@
+name: udagram-image-filtering
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./udagram-api-feed/Dockerfile
+            image: dangch/udagram-api-feed
+            context: ./udagram-api-feed
+          - dockerfile: ./udagram-api-user/Dockerfile
+            image: dangch/udagram-api-user
+            context: ./udagram-api-user
+          - dockerfile: ./udagram-frontend/Dockerfile
+            image: dangch/udagram-frontend
+            context: ./udagram-frontend
+          - dockerfile: ./udagram-reverseproxy/Dockerfile
+            image: dangch/udagram-reverseproxy
+            context: ./udagram-reverseproxy
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Login Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ matrix.image }}
+      - name: Build and push Docker image Drill4Net.Agent.Service
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
