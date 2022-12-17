@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: udagram-env
+  name: env-config
 data:
-  POSTGRES_HOST: database-1.cormx0jnp62d.us-east-1.rds.amazonaws.com
+  POSTGRES_HOST: database-1.cyd2mbyvketb.us-east-1.rds.amazonaws.com
   POSTGRES_DB: postgres
   AWS_BUCKET: dangch1-bucket
   AWS_REGION: us-east-1
