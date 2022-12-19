@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: env-config
 data:
-  POSTGRES_HOST: postgres.cyd2mbyvketb.us-east-1.rds.amazonaws.com
+  POSTGRES_HOST: postgres-1.cyd2mbyvketb.us-east-1.rds.amazonaws.com
   POSTGRES_DB: postgres
   AWS_BUCKET: dangch1-bucket2
   AWS_REGION: us-east-1
