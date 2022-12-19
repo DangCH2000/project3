@@ -5,7 +5,7 @@ metadata:
 data:
   POSTGRES_HOST: postgres.cyd2mbyvketb.us-east-1.rds.amazonaws.com
   POSTGRES_DB: postgres
-  AWS_BUCKET: dangch1-bucket
+  AWS_BUCKET: dangch1-bucket2
   AWS_REGION: us-east-1
   AWS_PROFILE: default
   JWT_SECRET: testing
