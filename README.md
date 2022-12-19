@@ -84,3 +84,116 @@ Launch the frontend app locally.
     ```
 4. `set_env.sh` is really for your backend application. Frontend applications have a different notion of how to store configurations. Configurations for the application endpoints can be configured inside of the `environments/environment.*ts` files.
 5. In `set_env.sh`, environment variables are set with `export $VAR=value`. Setting it this way is not permanent; every time you open a new terminal, you will have to run `set_env.sh` to reconfigure your environment variables. To verify if your environment variable is set, you can check the variable with a command like `echo $POSTGRES_USERNAME`.
+
+
+Some one cli: 
+psql:
+	# Assuming the endpoint is: mypostgres-database-1.c5szli4s4qq9.us-east-1.rds.amazonaws.com
+	psql -h $(POSTGRES_HOST) -U $(POSTGRES_USERNAME) postgres
+	# echo $(POSTGRES_PASSWORD) | psql -h $(POSTGRES_HOST) -U $(POSTGRES_USERNAME) postgres --password-stdin
+
+psql-command:
+	# List the databases
+	\list
+	# Go inside the "postgres" database and view relations
+	\c postgres
+	\dt
+
+backend-run:
+	npm run dev
+	
+test-local-api:
+	curl http://localhost:8080/api/v0/feed
+
+
+ionic-build:
+	ionic build
+	
+ionic-serve:
+	ionic serve --external
+	
+test-frondend:
+	curl http://localhost:8100
+
+docker-image-prune:
+	# Make sure the Docker services are running in your local machine
+	# Remove unused and dangling images
+	docker image prune --all
+
+docker-compose:
+	# Run this command from the directory where you have the "docker-compose-build.yaml" file present
+	sh set_env.sh
+	sudo docker-compose -f docker-compose-build.yaml build --force-rm
+	
+docker-compose-up:
+	sudo sh set_env.sh
+	sudo docker-compose up
+	
+docker-compose-config:
+	docker-compose config
+
+kube-config:
+	
+	
+	kubectl describe -n kube-system configmap/aws-auth
+	kubectl get svc
+	aws configure
+	
+	aws sts get-caller-identity
+	kubectl get all -A
+	
+	kubectl get pods -l 'app=reverseproxy' -o wide | awk {'print $1" " $3 " " $6'} | column -t
+
+
+aws-eks-update:
+	aws eks update-kubeconfig \
+	    --region $(REGION_NAME) \
+	    --name $(EKS_NAME) \
+	    --role-arn $(EKS_ROLE_ARN)
+	    
+eksctl:
+	eksctl create iamidentitymapping \
+		--cluster $(EKS_NAME) \
+		--arn $(AWS_USER_ARN) \
+		--group system:masters \
+		--username ops-user
+aws-token:
+	aws configure set aws_session_token $(AWS_TOKEN)
+	cat ~/.aws/credentials
+
+cat-aws:
+	cat ~/.aws/credentials
+
+kubectl:
+	kubectl get nodes
+	
+	kubectl get deployments
+	kubectl expose deployment frontend --type=LoadBalancer --name=publicfrontend
+	kubectl expose deployment reverseproxy --type=LoadBalancer --name=publicreverseproxy
+	kubectl get services 
+	# a831092aff2b3490a934a7d9eac7a705-1002910801.us-east-1.elb.amazonaws.com
+	kubectl get pods
+	
+	kubectl get secret env-secret -o jsonpath="{.data.POSTGRESS_PASSWORD}" | base64 --decode
+	
+	
+	kubectl exec -it frontend-76644d5bff-54ql6 -- sh
+	kubectl exec -it backend-feed-74f8c667b6-bgttg -- printenv
+	
+	kubectl rollout restart deployment/backend-feed
+	
+	kubectl get secrets
+	
+	kubectl describe pod backend-user-6c44dc9f98-29crt
+	
+	kubectl logs backend-feed-8d54d6748-2gx66 -p
+	
+	kubectl delete pods --all --force
+	
+	kubectl autoscale deployment backend-user --cpu-percent=70 --min=3 --max=5
+	
+	# This should show you metrics (they come from the metrics server)
+	kubectl top pods
+	kubectl top nodes
+	
+	kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
